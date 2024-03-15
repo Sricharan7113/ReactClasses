@@ -28,7 +28,7 @@ function App() {
         <Paper style={{ minHeight: "100vh", borderRadius: "0%" }} elevtion={9}>
           
           <Routes>
-            <Route path="/" element={<Home  />} />
+            <Route path="/" element={<MovieList />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/portal" element={<Portal mode={mode} setMode={setMode} />} >
