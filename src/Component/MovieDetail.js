@@ -2,6 +2,7 @@ import { ArrowBack, ArrowBackIos } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { api } from "./global";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -17,7 +18,8 @@ export default function MovieDetail() {
   };
 
   useEffect(() => {
-    fetch(`https://65f16b85034bdbecc76270a5.mockapi.io/movie/${id}`, {
+    // fetch(`https://65f16b85034bdbecc76270a5.mockapi.io/movie/${id}`, {
+      fetch(`${api}/getone/${id}`, {
       method: "GET",
     })
       .then((data) => data.json())

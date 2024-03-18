@@ -1,36 +1,61 @@
-import { Button } from '@mui/material';
-import React, { useEffect,useState } from 'react'
-import {  useNavigate, useParams } from 'react-router-dom'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {useFormik} from 'formik'
+import React from 'react'
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+// import './AddMovie.css'
+import * as yup from "yup";
+import { useNavigate } from 'react-router-dom';
+import { api } from './global';
 
-export default function MovieDetail() {
-  const {id} = useParams();
-  const navigate = useNavigate();
-//   console.log(id);
-const [movie, setMovie] = useState([]);
-        
-    useEffect(() => {
-        fetch(`https://65f16b93034bdbecc76271e3.mockapi.io/moviapi/movie/${id}`, {method: "GET"})
-        .then((data) => data.json())
-        .then((mv) => setMovie(mv));
-    },[]);
-    console.log(movie);
-    const ratingStyles ={
-        color: movie.rating >=8.5 ? "green" : "red",
-    };
-    return (
-    <div className='movie-detail'>
-    <iframe width="100%" height="900px" src={movie.trailer} 
-    title={movie.name} frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            <div className='movie-detail-container'>
-                <div className='movie-spec'>
-                    <h2 className='movie-name'>{movie.name}</h2>
-                    <h3 style={ratingStyles} className="movie-rating">⭐{movie.rating}</h3>
-                </div>
-                <p className='movie-summary'>{movie.summary}</p>
-            </div>
-            <Button variant="contained" startIcon={<ArrowBackIosIcon />} onClick={()=> navigate(-1)}>Back </Button>
-    </div>
+export default function AddMovie() {
+
+  const navigate = useNavigate()
+
+  const movievalidationSchema = yup.object({
+      name:yup.string().required(),
+      poster:yup.string().required().min(10).url(),
+      trailer:yup.string().required().min(10).url(),
+      rating:yup.number().required().min(0).max(10),
+      summary:yup.string().required().max(20),
+    });
+
+
+  const formik = useFormik({
+    initialValues:{
+      name:'',
+      poster:'',
+      trailer:'',
+      rating:'',
+      summary:'',
+    },
+    validationSchema:movievalidationSchema,
+    
+    onSubmit:(values) =>{
+      addMovie(values)
+    },
+  });
+  const addMovie =(values)=>{
+
+    // fetch("http://localhost:5000/post",{
+    fetch(`${api}/post`,{
+      method:"POST",
+      body:JSON.stringify(values),
+      headers:{'Content-type':"application/json"},
+    }).then(() => navigate("/portal/movielist"))
+  }
+
+  
+  return (
+    <>
+    <form className="addForms" onSubmit={formik.handleSubmit}>
+      <h1>Add Movie</h1>
+      <TextField id="outlined-basic" label="name" variant="outlined" value={formik.values.name} onChange={formik.handleChange} name='name' onBlur={formik.handleBlur} error={formik.touched.name && formik.errors.name} helperText={formik.touched.name && formik.errors.name ? formik.errors.name :null} />
+      <TextField id="outlined-basic" label="poster" variant="outlined" value={formik.values.poster} onChange={formik.handleChange} name='poster' onBlur={formik.handleBlur} error={formik.touched.poster && formik.errors.poster} helperText={formik.touched.poster && formik.errors.poster ? formik.errors.poster :null}/>
+      <TextField id="outlined-basic" label="trailer" variant="outlined" value={formik.values.trailer} onChange={formik.handleChange} name='trailer' onBlur={formik.handleBlur} error={formik.touched.trailer && formik.errors.trailer} helperText={formik.touched.trailer && formik.errors.trailer ? formik.errors.trailer :null}/>
+      <TextField id="outlined-basic" label="rating" variant="outlined" value={formik.values.rating} onChange={formik.handleChange} name='rating' onBlur={formik.handleBlur} error={formik.touched.rating && formik.errors.rating} helperText={formik.touched.rating && formik.errors.rating ? formik.errors.rating :null}/>
+      <TextField id="outlined-basic" label="summary" variant="outlined" value={formik.values.summary} onChange={formik.handleChange} name='summary' onBlur={formik.handleBlur} error={formik.touched.summary && formik.errors.summary} helperText={formik.touched.summary && formik.errors.summary ? formik.errors.summary :null}/>
+      <Button variant="contained" type='submit'>Submit</Button>
+    </form>
+    </>
   )
 }

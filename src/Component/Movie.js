@@ -16,6 +16,7 @@ import {
   CardContent,
   CardMedia,
 } from "@mui/material";
+import { api } from "./global";
 
 export default function Movie({ movieTake , getMovies }) {
   const [show, setShow] = useState(false);
@@ -27,7 +28,8 @@ export default function Movie({ movieTake , getMovies }) {
   };
 
   const deleteMovie = (id) => {
-        fetch('https://65f16b85034bdbecc76270a5.mockapi.io/moviapi/movie/${id}', {
+        // fetch('https://65f16b85034bdbecc76270a5.mockapi.io/moviapi/movie/${id}', {
+        fetch(`${api}/delete/${id}`, {
           method: 'DELETE',
         })
           .then(() => getMovies())
@@ -52,7 +54,7 @@ export default function Movie({ movieTake , getMovies }) {
               color="primary"
               className="DescriptionIcon"
               aria-label="Toggle-Description"
-              onClick={() => navigate(`/portal/view/${movieTake.id}`)}
+              onClick={() => navigate(`/portal/view/${movieTake._id}`)}
             >
               <InfoIcon></InfoIcon>
             </IconButton>
@@ -87,7 +89,7 @@ export default function Movie({ movieTake , getMovies }) {
             color="primary"
             className="DescriptionIcon"
             aria-label="Toggle-Description"
-            onClick={() => navigate(`/portal/edit/${movieTake.id}`)}
+            onClick={() => navigate(`/portal/edit/${movieTake._id}`)}
           >
             <EditIcon></EditIcon>
           </IconButton>
@@ -95,7 +97,7 @@ export default function Movie({ movieTake , getMovies }) {
           <IconButton
             sx={{ marginLeft: "auto" }}
             aria-label="Toggle-Description"
-            onClick={() => deleteMovie(movieTake.id)}
+            onClick={() => deleteMovie(movieTake._id)}
           >
             <DeleteIcon color="secondary" />
           </IconButton>
