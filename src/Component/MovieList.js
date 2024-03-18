@@ -137,7 +137,7 @@ export default function MovieList() {
       {movie.map((list, i) => {
         return (
           <div key={i} className="ListCard">
-            <Movie movieTake={list} />
+            <Movie movieTake={list} getMovies={getMovie} />
           </div>
         );
       })}

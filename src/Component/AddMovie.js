@@ -1,112 +1,36 @@
-import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
+import { Button } from '@mui/material';
+import React, { useEffect,useState } from 'react'
+import {  useNavigate, useParams } from 'react-router-dom'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
-import Button from "@mui/material/Button";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-
-export default function AddMovie() {
-  const movieValidationSchema = yup.object({
-    name: yup.string().required(),
-    poster: yup.string().required().min(10).url(),
-    trailer: yup.string().required().min(10).url(),
-    rating: yup.number().required().min(0).max(10),
-    summary: yup.string().required().min(20),
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      poster: "",
-      trailer: "",
-      rating: "",
-      summary: "",
-    },
-    validationSchema: movieValidationSchema,
-    onSubmit: (values) => {
-      addMovie(values);
-    },
-  });
-
+export default function MovieDetail() {
+  const {id} = useParams();
   const navigate = useNavigate();
-
-  const addMovie=(values)=>{
-    fetch("https://65f16b85034bdbecc76270a5.mockapi.io/movie",{
-      method:"POST",
-      body:JSON.stringify(values),
-      headers:{"Content-Type":"application/json"},
-    })
-
-    .then(()=>navigate("/portal/movie"));
-  };
-
-  return (
-    <div className="Container">
-
-      <h1>Add movie</h1>
-      <form className="FormInputs" onSubmit={formik.handleSubmit}>
-        <TextField
-          id="outlined-basic"
-          label="Movie Name:"
-          variant="outlined"
-          value={formik.values.name}
-          name="name"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.name && formik.errors.name}
-          helperText={formik.touched.name && formik.errors.name? formik.errors.name:null}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Movie Trailer"
-          variant="outlined"
-          value={formik.values.trailer}
-          name="trailer"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.trailer && formik.errors.trailer}
-          helperText={formik.touched.trailer && formik.errors.trailer? formik.errors.trailer:null}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Movie Poster:"
-          variant="outlined"
-          value={formik.values.poster}
-          name="poster"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}  
-          error={formik.touched.poster && formik.errors.poster}
-          helperText={formik.touched.poster && formik.errors.poster? formik.errors.poster:null}
-
-        />
-        <TextField
-          id="outlined-basic"
-          label="Movie Rating:"
-          variant="outlined"
-          value={formik.values.rating}
-          name="rating"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.rating && formik.errors.rating}
-          helperText={formik.touched.rating && formik.errors.rating? formik.errors.rating:null}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Movie Summary:"
-          variant="outlined"
-          value={formik.values.summary}
-          name="summary"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.summary  && formik.errors.summary}
-          helperText={formik.touched.summary && formik.errors.summary? formik.errors.summary:null}
-        />
-
-        <Button variant="contained" type="submit">
-          Add Movie
-        </Button>
-      </form>
+//   console.log(id);
+const [movie, setMovie] = useState([]);
+        
+    useEffect(() => {
+        fetch(`https://65f16b93034bdbecc76271e3.mockapi.io/moviapi/movie/${id}`, {method: "GET"})
+        .then((data) => data.json())
+        .then((mv) => setMovie(mv));
+    },[]);
+    console.log(movie);
+    const ratingStyles ={
+        color: movie.rating >=8.5 ? "green" : "red",
+    };
+    return (
+    <div className='movie-detail'>
+    <iframe width="100%" height="900px" src={movie.trailer} 
+    title={movie.name} frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <div className='movie-detail-container'>
+                <div className='movie-spec'>
+                    <h2 className='movie-name'>{movie.name}</h2>
+                    <h3 style={ratingStyles} className="movie-rating">⭐{movie.rating}</h3>
+                </div>
+                <p className='movie-summary'>{movie.summary}</p>
+            </div>
+            <Button variant="contained" startIcon={<ArrowBackIosIcon />} onClick={()=> navigate(-1)}>Back </Button>
     </div>
-  );
+  )
 }
