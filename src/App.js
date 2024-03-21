@@ -15,6 +15,8 @@ import Paper from '@mui/material/Paper'
 import MovieDetail from "./Component/MovieDetail";
 import EditMovie from "./Component/EditMovie";
 
+// import TopBar from "./Component/TopBar";
+
 function App() {
   const [mode, setMode] = useState("dark");
   const darkTheme = createTheme({
@@ -26,7 +28,7 @@ function App() {
     <div className="App">
       <ThemeProvider theme={darkTheme}> 
         <Paper style={{ minHeight: "100vh", borderRadius: "0%" }} elevtion={9}>
-          
+          {/* <TopBar></TopBar> */}
           <Routes>
             <Route path="/" element={<MovieList />} />
             <Route path="/register" element={<Register />} />

@@ -16,7 +16,7 @@ export default function AddMovie() {
       poster:yup.string().required().min(10).url(),
       trailer:yup.string().required().min(10).url(),
       rating:yup.number().required().min(0).max(10),
-      summary:yup.string().required().max(20),
+      summary:yup.string().required(),
     });
 
 

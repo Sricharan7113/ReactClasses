@@ -4,6 +4,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { api } from "./global";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const movieValidationSchema = yup.object({
@@ -20,10 +22,25 @@ export default function Register() {
     },
     validationSchema: movieValidationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      Register(values)
     },
   });
 
+  const navigate = useNavigate();
+
+  const Register = (values)=>{
+    fetch(`${api}/register`,{
+      method:'POST',
+      body : JSON.stringify(values),
+      headers : {"Content-Type":"application/json"},
+    })
+    
+    .then(()=>{
+      alert("Registered Sucessfully");
+    })
+
+    .then(()=> navigate("/login"))
+  }
   return (
     <div className="Container">
       <h1>Register</h1>
@@ -33,7 +50,7 @@ export default function Register() {
           label="Username:"
           variant="outlined"
           value={formik.values.username}
-          name="name"
+          name="username"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           error={formik.touched.username && formik.errors.username}

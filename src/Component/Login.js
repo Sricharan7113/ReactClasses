@@ -4,6 +4,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { api } from "./global";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const movieValidationSchema = yup.object({
@@ -20,9 +22,32 @@ export default function Login() {
     },
     validationSchema: movieValidationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      Login(values)
     },
   });
+
+  const navigate = useNavigate();
+
+  const Login = async(values)=>{
+    let data = await fetch(`${api}/login`,{
+      method : "POST",
+      body : JSON.stringify(values),
+      headers : {"Content-Type" : "application/json"},
+    })
+
+    if(data.status === 400)
+    {
+      const result = await data.json();
+      alert(result.message);
+    }
+    else{
+      const result = await data.json();
+      localStorage.setItem("StoreToken" , result.token)
+
+      alert("Loggedin Sucessfully");
+      navigate("/portal/home")
+    }
+  }
 
   return (
     <div className="Container">
